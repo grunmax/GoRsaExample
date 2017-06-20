@@ -12,8 +12,8 @@ var (
 
 func main() {
 
-	myKey, myPublicKey := util.NewKeyS()
-	hisKey, hisPublicKey := util.NewKeyS()
+	myKey, myPublicKey := util.NewKeys()
+	hisKey, hisPublicKey := util.NewKeys()
 
 	//	fmt.Println("Private Key : ", myKey)
 	//	fmt.Println("Public key :", myPublicKey)
