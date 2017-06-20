@@ -87,58 +87,58 @@ func newKey() *rsa.PrivateKey {
 	return key
 }
 
-func EncryptRsa(message string, key *rsa.PublicKey) []byte {
-	messagebytes := []byte(message)
-	hash := sha256.New()
-	ciphertext, err := rsa.EncryptOAEP(hash, rand.Reader, key, messagebytes, label)
-	if err != nil {
-		panic(err)
-	}
-	return ciphertext
-}
+//func EncryptRsa(message string, key *rsa.PublicKey) []byte {
+//	messagebytes := []byte(message)
+//	hash := sha256.New()
+//	ciphertext, err := rsa.EncryptOAEP(hash, rand.Reader, key, messagebytes, label)
+//	if err != nil {
+//		panic(err)
+//	}
+//	return ciphertext
+//}
 
-func SignRsa(message string, key *rsa.PrivateKey) []byte {
-	var opts rsa.PSSOptions
-	messagebytes := []byte(message)
-	opts.SaltLength = rsa.PSSSaltLengthAuto
-	PSSmessage := messagebytes
-	newhash := crypto.SHA256
-	pssh := newhash.New()
-	pssh.Write(PSSmessage)
-	hashed := pssh.Sum(nil)
+//func SignRsa(message string, key *rsa.PrivateKey) []byte {
+//	var opts rsa.PSSOptions
+//	messagebytes := []byte(message)
+//	opts.SaltLength = rsa.PSSSaltLengthAuto
+//	PSSmessage := messagebytes
+//	newhash := crypto.SHA256
+//	pssh := newhash.New()
+//	pssh.Write(PSSmessage)
+//	hashed := pssh.Sum(nil)
 
-	signature, err := rsa.SignPSS(rand.Reader, key, newhash, hashed, &opts)
-	if err != nil {
-		panic(err)
-	}
-	return signature
-}
+//	signature, err := rsa.SignPSS(rand.Reader, key, newhash, hashed, &opts)
+//	if err != nil {
+//		panic(err)
+//	}
+//	return signature
+//}
 
-func DecryptRsa(ciphertext []byte, key *rsa.PrivateKey) string {
-	hash := sha256.New()
-	decrypted, err := rsa.DecryptOAEP(hash, rand.Reader, key, ciphertext, label)
-	if err != nil {
-		panic(err)
-	}
-	return string(decrypted[:len(decrypted)])
-}
+//func DecryptRsa(ciphertext []byte, key *rsa.PrivateKey) string {
+//	hash := sha256.New()
+//	decrypted, err := rsa.DecryptOAEP(hash, rand.Reader, key, ciphertext, label)
+//	if err != nil {
+//		panic(err)
+//	}
+//	return string(decrypted[:len(decrypted)])
+//}
 
-func VerifyRsa(message string, signature []byte, key *rsa.PublicKey) bool {
-	var opts rsa.PSSOptions
-	messagebytes := []byte(message)
-	opts.SaltLength = rsa.PSSSaltLengthAuto
-	PSSmessage := messagebytes
-	newhash := crypto.SHA256
-	pssh := newhash.New()
-	pssh.Write(PSSmessage)
-	hashed := pssh.Sum(nil)
-	err := rsa.VerifyPSS(key, newhash, hashed, signature, &opts)
-	if err != nil {
-		return false
-	} else {
-		return true
-	}
-}
+//func VerifyRsa(message string, signature []byte, key *rsa.PublicKey) bool {
+//	var opts rsa.PSSOptions
+//	messagebytes := []byte(message)
+//	opts.SaltLength = rsa.PSSSaltLengthAuto
+//	PSSmessage := messagebytes
+//	newhash := crypto.SHA256
+//	pssh := newhash.New()
+//	pssh.Write(PSSmessage)
+//	hashed := pssh.Sum(nil)
+//	err := rsa.VerifyPSS(key, newhash, hashed, signature, &opts)
+//	if err != nil {
+//		return false
+//	} else {
+//		return true
+//	}
+//}
 
 func EncryptAndSignRsa(message string, keypub_ string, keysec_ string) (string, string) {
 	keypub := getPublicKey(keypub_)
