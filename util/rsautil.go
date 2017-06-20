@@ -8,12 +8,11 @@ import (
 	"crypto/sha256"
 	b64 "encoding/base64"
 	"encoding/gob"
-	"fmt"
 	"strconv"
 )
 
 var (
-	keysize = 1024
+	keysize = 2048
 	label   = []byte("some x-label")
 )
 
@@ -41,14 +40,14 @@ func getPrivateKey(str string) *rsa.PrivateKey {
 	key := rsa.PrivateKey{}
 	by, err := b64.StdEncoding.DecodeString(str)
 	if err != nil {
-		fmt.Println(`failed base64 Decode`, err)
+		panic(err)
 	}
 	b := bytes.Buffer{}
 	b.Write(by)
 	d := gob.NewDecoder(&b)
 	err = d.Decode(&key)
 	if err != nil {
-		fmt.Println(`failed gob Decode`, err)
+		panic(err)
 	}
 	return &key
 }
@@ -57,14 +56,14 @@ func getPublicKey(str string) *rsa.PublicKey {
 	key := rsa.PublicKey{}
 	by, err := b64.StdEncoding.DecodeString(str)
 	if err != nil {
-		fmt.Println(`failed base64 Decode`, err)
+		panic(err)
 	}
 	b := bytes.Buffer{}
 	b.Write(by)
 	d := gob.NewDecoder(&b)
 	err = d.Decode(&key)
 	if err != nil {
-		fmt.Println(`failed gob Decode`, err)
+		panic(err)
 	}
 	return &key
 }
