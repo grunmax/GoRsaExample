@@ -69,17 +69,17 @@ func getPublicKey(str string) *rsa.PublicKey {
 	return &key
 }
 
-func GetMaxMessage() int {
+func getMaxMessage() int {
 	return ((keysize - 384) / 8) + 7
 }
 
 func NewKeys() (string, string) {
-	key := NewKey()
+	key := newKey()
 	pubkey := &key.PublicKey
 	return getPrivateKeyStr(key), getPublicKeyStr(pubkey)
 }
 
-func NewKey() *rsa.PrivateKey {
+func newKey() *rsa.PrivateKey {
 	key, err := rsa.GenerateKey(rand.Reader, keysize)
 	if err != nil {
 		panic(err)
@@ -144,7 +144,7 @@ func EncryptAndSignRsa(message string, keypub_ string, keysec_ string) (string, 
 	keypub := getPublicKey(keypub_)
 	keysec := getPrivateKey(keysec_)
 	messagebytes := []byte(message)
-	maxlen := GetMaxMessage()
+	maxlen := getMaxMessage()
 	if len(messagebytes) > maxlen {
 		panic("too big, message should be " + strconv.Itoa(maxlen))
 	}
@@ -155,7 +155,6 @@ func EncryptAndSignRsa(message string, keypub_ string, keysec_ string) (string, 
 	}
 	ciphertext := b64.StdEncoding.EncodeToString([]byte(ciphertext_))
 
-	// sign by my private key
 	var opts rsa.PSSOptions
 	opts.SaltLength = rsa.PSSSaltLengthAuto
 	PSSmessage := messagebytes
