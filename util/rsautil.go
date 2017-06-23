@@ -5,6 +5,7 @@ import (
 	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha1"
 	"crypto/sha256"
 	b64 "encoding/base64"
 	"encoding/gob"
@@ -12,9 +13,16 @@ import (
 )
 
 var (
-	keysize = 2048
-	label   = []byte("some x-label")
+	passphrase = "secret123~"
+	keysize    = 2048
+	label      = []byte("some x-label")
 )
+
+func hashkey(s string) []byte {
+	h := sha1.New()
+	h.Write([]byte(s))
+	return h.Sum(nil)
+}
 
 func getPrivateKeyStr(key *rsa.PrivateKey) string {
 	b := bytes.Buffer{}
@@ -23,7 +31,8 @@ func getPrivateKeyStr(key *rsa.PrivateKey) string {
 	if err != nil {
 		panic(err)
 	}
-	return b64.StdEncoding.EncodeToString(b.Bytes())
+	keyEnc := encryptBF(b.Bytes(), hashkey(passphrase))
+	return b64.StdEncoding.EncodeToString(keyEnc)
 }
 
 func getPublicKeyStr(key *rsa.PublicKey) string {
@@ -42,6 +51,7 @@ func getPrivateKey(str string) *rsa.PrivateKey {
 	if err != nil {
 		panic(err)
 	}
+	by = decryptBF(by, hashkey(passphrase))
 	b := bytes.Buffer{}
 	b.Write(by)
 	d := gob.NewDecoder(&b)

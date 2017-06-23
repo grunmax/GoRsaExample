@@ -7,11 +7,10 @@ import (
 )
 
 var (
-	message = "Go to the app folder and execute go build there."
+	message = "<Here is some emailed key>"
 )
 
 func main() {
-
 	myKey, myPublicKey := util.NewKeys()
 	hisKey, hisPublicKey := util.NewKeys()
 
@@ -20,7 +19,7 @@ func main() {
 	//	fmt.Println("Private Key : ", hisKey)
 	//	fmt.Println("Public key ", hisPublicKey)
 
-	fmt.Println("Original message:", message)
+	fmt.Println("Original:", message)
 	//I do
 	ciphertext, signature := util.EncryptAndSignRsa(message, hisPublicKey, myKey)
 	//	fmt.Println("Encrypted:", ciphertext)
@@ -30,7 +29,7 @@ func main() {
 
 	//he does
 	plainText, verified := util.DecryptAndVerifyRsa(ciphertext, signature, hisKey, myPublicKey)
-	fmt.Println("Decrypted message:", plainText)
+	fmt.Println("Decrypted:", plainText)
 	fmt.Println("Verified:", verified)
 
 }
