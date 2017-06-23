@@ -7,30 +7,47 @@ import (
 )
 
 var (
-	content    = "It was noisy, crowded, bawdy, bustling and busy. Trades of every kind and description!"
-	contentKey = "<Here is emailed contentKey>"
+	bigContentNotForRsa = `TOP 10 FACTS ABOUT SHAKESPEARE!
+Trivia Fact 1 - No one knows the actual birthday of Shakespeare!
+Trivia Fact 2 - Anne Hathaway was eight years older than Shakespeare and three months pregnant when they got married!
+Trivia Fact 3 - Many Shakespeare life facts are unknown - these are referred to as the Lost Years
+Trivia Fact 4 - Shakespeare's Father, John was a money lender! He was accused in the Exchequer Court of Usury for lending money at the inflated rate of 20% and 25% Interest!
+Trivia Fact 5 - William Arden, a relative of Shakespeare's mother Mary Arden, was arrested for plotting against Queen Elizabeth I, imprisoned in the Tower of London and executed!
+Trivia Fact 6 - Shakespeare and his company built TWO Globe Theatres!
+Trivia Fact 7 - Shakespeare never published any of his plays!
+Trivia Fact 8 - Shakespeare and the Globe Actors were implicated in the Essex Rebellion of 1601!
+Trivia Fact 9 - Many eminent Authors and Politicians do not believe that Shakespeare wrote his plays...
+Trivia Fact 10 - Shakespeare's family were all illiterate!`
+
+	myKey        string
+	myPublicKey  string
+	hisKey       string
+	hisPublicKey string
 )
 
+func init() {
+	myKey, myPublicKey = util.NewKeys()
+	hisKey, hisPublicKey = util.NewKeys()
+}
+
 func main() {
-	myKey, myPublicKey := util.NewKeys()
-	hisKey, hisPublicKey := util.NewKeys()
+	sessionKey, _ := util.GenerateRandomString(32)
 
-	//	fmt.Println("Private Key : ", myKey)
-	//	fmt.Println("Public key :", myPublicKey)
-	//	fmt.Println("Private Key : ", hisKey)
-	//	fmt.Println("Public key ", hisPublicKey)
-
-	fmt.Println("Original:", contentKey)
 	//I do
-	ciphertext, signature := util.EncryptAndSignRsa(contentKey, hisPublicKey, myKey)
-	//	fmt.Println("Encrypted:", ciphertext)
-	//	fmt.Println("Signature:", signature)
+	encryptedSessionKey, keySignature := util.EncryptAndSignRsa(sessionKey, hisPublicKey, myKey)
+	encryptedContent := util.EncryptPlainBF(bigContentNotForRsa, sessionKey)
 
-	//send ciphertext&signature
+	//send
 
 	//he does
-	plainText, verified := util.DecryptAndVerifyRsa(ciphertext, signature, hisKey, myPublicKey)
-	fmt.Println("Decrypted:", plainText)
-	fmt.Println("Verified:", verified)
+	decryptedSessionKey, verified := util.DecryptAndVerifyRsa(encryptedSessionKey, keySignature, hisKey, myPublicKey)
+
+	if verified {
+		fmt.Println("Session key is verified")
+		decryptedContent := util.DecryptPlainBF(encryptedContent, decryptedSessionKey)
+		fmt.Println("Decrypted:", decryptedContent)
+	} else {
+		fmt.Println("Session key is NOT verified!")
+	}
 
 }
