@@ -31,8 +31,8 @@ func encryptBF(pt, key []byte) []byte {
 }
 
 func DecryptPlainBF(plain, key string) string {
-	plaincipher, _ := b64.StdEncoding.DecodeString(plain)
-	decrypted := decryptBF(plaincipher, []byte(key))
+	plainbytes, _ := b64.StdEncoding.DecodeString(plain)
+	decrypted := decryptBF(plainbytes, []byte(key))
 	return string(decrypted[:len(decrypted)])
 }
 

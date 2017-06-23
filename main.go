@@ -19,27 +19,29 @@ Trivia Fact 8 - Shakespeare and the Globe Actors were implicated in the Essex Re
 Trivia Fact 9 - Many eminent Authors and Politicians do not believe that Shakespeare wrote his plays...
 Trivia Fact 10 - Shakespeare's family were all illiterate!`
 
-	myKey        string
-	myPublicKey  string
-	hisKey       string
-	hisPublicKey string
+	myKey         string
+	myPublicKey   string
+	hisKey        string
+	hisPublicKey  string
+	myPassphrase  = "secret123~"
+	hisPassphrase = "sddfdfba!Q"
 )
 
 func init() {
-	myKey, myPublicKey = util.NewKeys()
-	hisKey, hisPublicKey = util.NewKeys()
+	myKey, myPublicKey = util.NewKeys(myPassphrase)
+	hisKey, hisPublicKey = util.NewKeys(hisPassphrase)
 }
 
 func main() {
 	//I do
 	sessionKey, _ := util.GenerateRandomString(32)
 	encryptedContent := util.EncryptPlainBF(bigContentNotForRsa, sessionKey)
-	encryptedSessionKey, keySignature := util.EncryptAndSignRsa(sessionKey, hisPublicKey, myKey)
+	encryptedSessionKey, keySignature := util.EncryptAndSignRsa(sessionKey, hisPublicKey, myKey, myPassphrase)
 
 	//send encryptedContent, encryptedSessionKey, keySignature
 
 	//he does
-	decryptedSessionKey, verified := util.DecryptAndVerifyRsa(encryptedSessionKey, keySignature, hisKey, myPublicKey)
+	decryptedSessionKey, verified := util.DecryptAndVerifyRsa(encryptedSessionKey, keySignature, hisKey, myPublicKey, hisPassphrase)
 	if verified {
 		fmt.Println("Session key is verified")
 		decryptedContent := util.DecryptPlainBF(encryptedContent, decryptedSessionKey)

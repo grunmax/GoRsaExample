@@ -12,9 +12,8 @@ import (
 )
 
 var (
-	passphrase = "secret123~" // should be use unique passphrase for key
-	keysize    = 2048
-	label      = []byte("some x-label")
+	keysize = 2048
+	label   = []byte("some x-label")
 )
 
 func hashkey(s string) []byte {
@@ -23,7 +22,7 @@ func hashkey(s string) []byte {
 	return h.Sum(nil)
 }
 
-func getPrivateKeyStr(key *rsa.PrivateKey) string {
+func getPrivateKeyStr(key *rsa.PrivateKey, passphrase string) string {
 	b := bytes.Buffer{}
 	e := gob.NewEncoder(&b)
 	err := e.Encode(key)
@@ -44,7 +43,7 @@ func getPublicKeyStr(key *rsa.PublicKey) string {
 	return b64.StdEncoding.EncodeToString(b.Bytes())
 }
 
-func getPrivateKey(str string) *rsa.PrivateKey {
+func getPrivateKey(str string, passphrase string) *rsa.PrivateKey {
 	key := rsa.PrivateKey{}
 	by, err := b64.StdEncoding.DecodeString(str)
 	if err != nil {
@@ -81,10 +80,10 @@ func getMaxMessage() int {
 	return ((keysize - 384) / 8) + 7
 }
 
-func NewKeys() (string, string) {
+func NewKeys(passphrase string) (string, string) {
 	key := newKey()
 	pubkey := &key.PublicKey
-	return getPrivateKeyStr(key), getPublicKeyStr(pubkey)
+	return getPrivateKeyStr(key, passphrase), getPublicKeyStr(pubkey)
 }
 
 func newKey() *rsa.PrivateKey {
@@ -148,9 +147,9 @@ func newKey() *rsa.PrivateKey {
 //	}
 //}
 
-func EncryptAndSignRsa(message string, keypub_ string, keysec_ string) (string, string) {
+func EncryptAndSignRsa(message string, keypub_ string, keysec_ string, passphrase string) (string, string) {
 	keypub := getPublicKey(keypub_)
-	keysec := getPrivateKey(keysec_)
+	keysec := getPrivateKey(keysec_, passphrase)
 	messagebytes := []byte(message)
 	maxlen := getMaxMessage()
 	if len(messagebytes) > maxlen {
@@ -179,10 +178,10 @@ func EncryptAndSignRsa(message string, keypub_ string, keysec_ string) (string, 
 	return ciphertext, signature
 }
 
-func DecryptAndVerifyRsa(ciphertext_ string, signature_ string, keysec_ string, keypub_ string) (string, bool) {
+func DecryptAndVerifyRsa(ciphertext_ string, signature_ string, keysec_ string, keypub_ string, passphrase string) (string, bool) {
 	ciphertext, _ := b64.StdEncoding.DecodeString(ciphertext_)
 	signature, _ := b64.StdEncoding.DecodeString(signature_)
-	keysec := getPrivateKey(keysec_)
+	keysec := getPrivateKey(keysec_, passphrase)
 	keypub := getPublicKey(keypub_)
 	hash := sha256.New()
 	messagebytes, err := rsa.DecryptOAEP(hash, rand.Reader, keysec, ciphertext, label)
