@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	passphrase = "secret123~" // input
+	passphrase = "secret123~" // should be use unique passphrase for key
 	keysize    = 2048
 	label      = []byte("some x-label")
 )

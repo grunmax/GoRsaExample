@@ -31,17 +31,15 @@ func init() {
 }
 
 func main() {
-	sessionKey, _ := util.GenerateRandomString(32)
-
 	//I do
-	encryptedSessionKey, keySignature := util.EncryptAndSignRsa(sessionKey, hisPublicKey, myKey)
+	sessionKey, _ := util.GenerateRandomString(32)
 	encryptedContent := util.EncryptPlainBF(bigContentNotForRsa, sessionKey)
+	encryptedSessionKey, keySignature := util.EncryptAndSignRsa(sessionKey, hisPublicKey, myKey)
 
-	//send
+	//send encryptedContent, encryptedSessionKey, keySignature
 
 	//he does
 	decryptedSessionKey, verified := util.DecryptAndVerifyRsa(encryptedSessionKey, keySignature, hisKey, myPublicKey)
-
 	if verified {
 		fmt.Println("Session key is verified")
 		decryptedContent := util.DecryptPlainBF(encryptedContent, decryptedSessionKey)
