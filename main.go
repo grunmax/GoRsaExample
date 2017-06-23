@@ -7,7 +7,8 @@ import (
 )
 
 var (
-	message = "<Here is some emailed key>"
+	content    = "It was noisy, crowded, bawdy, bustling and busy. Trades of every kind and description!"
+	contentKey = "<Here is emailed contentKey>"
 )
 
 func main() {
@@ -19,9 +20,9 @@ func main() {
 	//	fmt.Println("Private Key : ", hisKey)
 	//	fmt.Println("Public key ", hisPublicKey)
 
-	fmt.Println("Original:", message)
+	fmt.Println("Original:", contentKey)
 	//I do
-	ciphertext, signature := util.EncryptAndSignRsa(message, hisPublicKey, myKey)
+	ciphertext, signature := util.EncryptAndSignRsa(contentKey, hisPublicKey, myKey)
 	//	fmt.Println("Encrypted:", ciphertext)
 	//	fmt.Println("Signature:", signature)
 

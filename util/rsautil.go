@@ -5,7 +5,6 @@ import (
 	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/sha1"
 	"crypto/sha256"
 	b64 "encoding/base64"
 	"encoding/gob"
@@ -13,13 +12,13 @@ import (
 )
 
 var (
-	passphrase = "secret123~"
+	passphrase = "secret123~" // input
 	keysize    = 2048
 	label      = []byte("some x-label")
 )
 
 func hashkey(s string) []byte {
-	h := sha1.New()
+	h := sha256.New()
 	h.Write([]byte(s))
 	return h.Sum(nil)
 }
